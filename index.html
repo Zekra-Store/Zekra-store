@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#2c1b13">
+  <title>ذِكرى | ZEKRA — Jewelry with meaning</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="zekra_style.css">
+</head>
+<body>
+  <div class="topbar" data-i18n="topline">✦ كل سلسلة... ذكرى لا تُنسى ✦</div>
+  <header class="nav">
+    <div style="display:flex;align-items:center;gap:6px;">
+      <button class="mobile-menu-btn" id="mobileMenuToggle" onclick="toggleMobileMenu()" aria-label="Menu">☰</button>
+      <div class="navtools">
+        <button class="iconbtn" aria-label="Shopping cart" onclick="showCart()">♧ <span class="cart-count" id="cartCount">0</span></button>
+        <button class="iconbtn notif-btn" id="notifBellBtn" aria-label="Bookings notifications" onclick="openBookingsModal()" title="إشعارات طلبات الحجز">🔔 <span class="cart-count notif-count" id="notifCount" style="display:none">0</span></button>
+        
+        <!-- Customer Sign In & Sign Up (Unlinked from Admin) -->
+        <div id="customerAuthNavWrap" style="display:flex;gap:5px;align-items:center;">
+          <button class="nav-auth-btn" id="loginNavBtn" onclick="openCustomerAuth('login')">دخول</button>
+          <button class="nav-auth-btn nav-signup-btn desktop-hide-mobile" id="signupNavBtn" onclick="openCustomerAuth('signup')">✨ إنشاء حساب</button>
+        </div>
+        <div id="customerProfileNavWrap" style="display:none;">
+          <button class="user-badge-btn" id="customerUserBadge" onclick="openCustomerProfile()" title="عرض حسابي وبياناتي">
+            👤 <span id="customerNameNav">حسابي</span>
+          </button>
+        </div>
+
+        <button class="iconbtn desktop-hide-mobile" aria-label="Search" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">⌕</button>
+      </div>
+    </div>
+    <nav class="navlinks">
+      <a href="#home" data-i18n="home">الرئيسية</a><a href="#products" data-i18n="store">المتجر</a><a href="#about" data-i18n="about">من نحن</a>
+    </nav>
+    <a class="brand" href="#home">ذِكرى<small>ZEKRA</small></a>
+    <div class="navtools desktop-hide-mobile">
+      <a href="#footer" data-i18n="contact">تواصل معنا</a>
+      <button class="langbtn" id="langToggle" onclick="toggleLanguage()">English 🌐</button>
+    </div>
+  </header>
+
+  <!-- Mobile Slide Down Menu Drawer -->
+  <div class="mobile-drawer" id="mobileDrawer">
+    <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(44,27,19,0.12);padding-bottom:10px;">
+      <strong style="color:var(--brown);font-size:15px;">✦ قائمة متجر ذِكرى</strong>
+      <button onclick="closeMobileMenu()" style="border:0;background:none;font-size:22px;color:var(--brown);padding:2px 8px;cursor:pointer;">✕</button>
+    </div>
+    <a class="mobile-drawer-link" href="#home" onclick="closeMobileMenu()" data-i18n="home">الرئيسية <span>←</span></a>
+    <a class="mobile-drawer-link" href="#products" onclick="closeMobileMenu()" data-i18n="store">المتجر <span>←</span></a>
+    <a class="mobile-drawer-link" href="#about" onclick="closeMobileMenu()" data-i18n="about">من نحن <span>←</span></a>
+    <a class="mobile-drawer-link" href="#footer" onclick="closeMobileMenu()" data-i18n="contact">تواصل معنا <span>←</span></a>
+    
+    <div class="mobile-drawer-actions" id="mobileDrawerAuthArea">
+      <!-- Injected dynamically via updateCustomerNavUI -->
+    </div>
+
+    <div class="mobile-drawer-row">
+      <button class="langbtn" id="mobileLangToggle" style="border:1px solid var(--line);padding:7px 14px;border-radius:20px;background:#fff;" onclick="toggleLanguage()">English 🌐</button>
+      <a href="javascript:void(0)" onclick="closeMobileMenu();openAdminAuth()" style="color:var(--gold);font-size:12px;font-weight:700;">👑 لوحة الأدمن</a>
+    </div>
+  </div>
+
+  <div id="adminModeBanner" class="admin-mode-banner">
+    <span>👑 <strong data-i18n="adminBannerText">وضع الأدمن نشط: يمكنك الآن إضافة منتجات وحذف أي منتج مباشرة.</strong></span>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+      <button class="banner-btn" onclick="openAdminAuth()" data-i18n="openAdminPanel">+ إضافة منتج جديد</button>
+      <button class="banner-btn" onclick="openBookingsModal()" style="background:#4a3022;color:var(--gold);border:1px solid var(--gold);">📋 طلبات الحجز (<span id="adminBookingsBadge">0</span>)</button>
+      <button class="banner-btn-secondary" onclick="logoutAdmin()" data-i18n="logout">تسجيل الخروج</button>
+    </div>
+  </div>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-photo" role="img" aria-label="Gold necklace"></div>
+      <div class="hero-copy">
+        <h1 data-i18n="heroTitle">ذِكرى</h1><div class="latin">Z E K R A</div>
+        <div class="ornament">✦</div>
+        <p data-i18n="heroText">سلاسل تحمل معك<br>أجمل لحظاتك... إلى الأبد</p>
+        <a href="#products" class="outline-btn" data-i18n="shopNow">تسوّقي الآن ←</a>
+        <a class="whatsapp-link" href="https://wa.me/201112264887" target="_blank" rel="noopener noreferrer" data-i18n="whatsapp">تواصل واتساب</a>
+      </div>
+    </section>
+
+    <section class="section" id="products">
+      <h2 class="section-title" data-i18n="bestSellers">أكثر السلاسل مبيعًا</h2>
+      <div class="products-layout" id="productGrid"></div>
+    </section>
+
+    <section class="about" id="about">
+      <div class="about-photo" role="img" aria-label="Elegant jewelry gift box"></div>
+      <div class="about-copy">
+        <h2 data-i18n="aboutTitle">عن ذِكرى</h2>
+        <p data-i18n="aboutText">كل سلسلة في ذِكرى هي أكثر من مجرد قطعة مجوهرات. هي ذكرى تُحفظ، ومشاعر تُترجم، وقصة تبقى معك دائمًا. تصاميم بسيطة وأنيقة، لتكون جزءًا من لحظاتك الأجمل.</p>
+        <a href="#gallery" class="outline-btn" data-i18n="learnMore">اعرفي المزيد ←</a>
+      </div>
+      <div class="benefits">
+        <div class="benefit"><div class="benefit-icon">♢</div><div><strong data-i18n="quality">جودة عالية</strong><span data-i18n="qualitySub">خامات مختارة بعناية</span></div></div>
+        <div class="benefit"><div class="benefit-icon">♧</div><div><strong data-i18n="shipping">شحن سريع</strong><span data-i18n="shippingSub">لجميع أنحاء مصر</span></div></div>
+        <div class="benefit"><div class="benefit-icon">♡</div><div><strong data-i18n="secure">دفع آمن</strong><span data-i18n="secureSub">بأمان واطمئنان</span></div></div>
+      </div>
+    </section>
+
+    <section class="tiles" id="gallery">
+      <a class="tile" href="#products"><img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=700&q=80" alt="New jewelry designs"><span data-i18n="tile1">← تصاميم جديدة</span></a>
+      <a class="tile" href="#products"><img src="https://images.unsplash.com/photo-1617038220319-276d3cfab638?auto=format&fit=crop&w=700&q=80" alt="Fine jewelry"><span data-i18n="tile2">← خامات عالية الجودة</span></a>
+      <a class="tile" href="#about"><img src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=700&q=80" alt="Jewelry packaging"><span data-i18n="tile3">← تغليف مميز</span></a>
+      <a class="tile" href="#products"><img src="https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=700&q=80" alt="Personal jewelry"><span data-i18n="tile4">← اختاري ما يشبهك</span></a>
+    </section>
+  </main>
+
+  <footer id="footer">
+    <a class="brand footer-brand" href="#home">ذِكرى<small>ZEKRA ✦</small></a>
+    <div class="newsletter">
+      <h3 data-i18n="newsletterTitle">اشتركي في قائمتنا البريدية</h3>
+      <p data-i18n="newsletterText">ليصلك كل جديد من تصاميمنا وعروضنا الخاصة</p>
+      <form class="subscribe" onsubmit="subscribe(event)"><input id="email" type="email" required placeholder="أدخل بريدك الإلكتروني" data-placeholder="emailPlaceholder"><button type="submit" aria-label="Subscribe">←</button></form>
+    </div>
+    <div class="footer-links"><a href="#about" data-i18n="privacy">سياسة الخصوصية</a><a href="#footer" data-i18n="terms">الشحن والاستبدال</a><a href="#footer" data-i18n="contact">تواصل معنا</a><a href="javascript:void(0)" onclick="openAdminAuth()" style="color:var(--gold);opacity:.9;">👑 لوحة الأدمن</a></div>
+    <div class="copyright">© 2026 ZEKRA. <span data-i18n="rights">جميع الحقوق محفوظة.</span></div>
+  </footer>
+
+  <!-- Customer / Buyer Auth Modal (100% Unlinked from Admin) -->
+  <div class="login-backdrop" id="customerAuthModal" role="dialog" aria-modal="true" aria-labelledby="custModalTitle" onclick="if(event.target===this)closeCustomerAuth()">
+    <div class="login-card">
+      <button class="close-login" onclick="closeCustomerAuth()" aria-label="Close">×</button>
+      <h2 id="custModalTitle">حساب المشتري ✦</h2>
+      <p class="login-sub" id="custModalSub">أهلاً بكِ في ذِكرى! سجلي حسابكِ لمتابعة طلباتكِ وتسهيل الحجز والشراء</p>
+      
+      <div class="role-tabs">
+        <button id="custTabLogin" class="active" onclick="setCustAuthMode('login')">تسجيل الدخول</button>
+        <button id="custTabSignup" onclick="setCustAuthMode('signup')">✨ إنشاء حساب مشتري</button>
+      </div>
+
+      <!-- Customer Login Form -->
+      <form id="custLoginForm" onsubmit="handleCustomerLogin(event)">
+        <label for="custLoginEmail">البريد الإلكتروني</label>
+        <input id="custLoginEmail" type="email" autocomplete="username" required placeholder="name@example.com">
+        <label for="custLoginPassword">كلمة المرور</label>
+        <input id="custLoginPassword" type="password" autocomplete="current-password" required minlength="4" placeholder="••••••••">
+        <button class="login-submit" type="submit">تسجيل الدخول</button>
+        <p style="text-align:center;font-size:12px;margin:14px 0 0;">
+          مشترية جديدة؟ <button type="button" class="text-link" onclick="setCustAuthMode('signup')">إنشاء حساب جديد الآن ✨</button>
+        </p>
+      </form>
+
+      <!-- Customer Sign Up Form -->
+      <form id="custSignupForm" style="display:none;" onsubmit="handleCustomerSignup(event)">
+        <label for="custSignupName">الاسم بالكامل</label>
+        <input id="custSignupName" type="text" autocomplete="name" required placeholder="اسمك الكريم">
+        
+        <label for="custSignupEmail">البريد الإلكتروني</label>
+        <input id="custSignupEmail" type="email" autocomplete="email" required placeholder="name@example.com">
+        
+        <label for="custSignupPhone">رقم الموبايل (للتواصل ومتابعة الشحن)</label>
+        <input id="custSignupPhone" type="tel" autocomplete="tel" required placeholder="01xxxxxxxxx">
+        
+        <label for="custSignupAddress">عنوان التوصيل المعتاد (المحافظة والمنطقة)</label>
+        <input id="custSignupAddress" type="text" autocomplete="street-address" placeholder="مثال: القاهرة - المعادي">
+        
+        <label for="custSignupPassword">كلمة المرور</label>
+        <input id="custSignupPassword" type="password" autocomplete="new-password" required minlength="4" placeholder="••••••••">
+        
+        <button class="login-submit" style="background:linear-gradient(135deg,var(--brown),#4e3221);" type="submit">✨ إنشاء الحساب الآن</button>
+        <p style="text-align:center;font-size:12px;margin:14px 0 0;">
+          لديكِ حساب بالفعل؟ <button type="button" class="text-link" onclick="setCustAuthMode('login')">تسجيل الدخول</button>
+        </p>
+      </form>
+      <div class="login-result" id="custAuthResult"></div>
+    </div>
+  </div>
+
+  <!-- Customer Profile Modal -->
+  <div class="login-backdrop" id="customerProfileModal" role="dialog" aria-modal="true" aria-labelledby="custProfileTitle" onclick="if(event.target===this)closeCustomerProfile()">
+    <div class="login-card">
+      <button class="close-login" onclick="closeCustomerProfile()" aria-label="Close">×</button>
+      <h2 id="custProfileTitle" style="font-size:22px;margin-bottom:4px;">👤 حسابي في ذِكرى</h2>
+      <p class="login-sub" id="custProfileWelcome">بياناتكِ المسجلة لمتابعة المشتريات والحجوزات</p>
+      
+      <div style="background:#fffaf4;border:1px solid var(--line);padding:14px;border-radius:8px;margin-bottom:14px;font-size:13px;line-height:2;">
+        <div><strong>👤 الاسم:</strong> <span id="profName">-</span></div>
+        <div><strong>📧 البريد:</strong> <span id="profEmail">-</span></div>
+        <div><strong>📱 الموبايل:</strong> <span id="profPhone">-</span></div>
+        <div><strong>📍 العنوان:</strong> <span id="profAddress">-</span></div>
+      </div>
+
+      <div style="margin-bottom:14px;">
+        <strong style="font-size:13px;display:block;margin-bottom:8px;">📋 حجوزاتكِ السابقة:</strong>
+        <div class="cust-orders-list" id="custOrdersList">
+          <!-- User bookings -->
+        </div>
+      </div>
+
+      <button class="logout-login" onclick="logoutCustomer()" style="width:100%;text-align:center;color:#b3261e;border-color:#b3261e;">تسجيل الخروج من الحساب</button>
+    </div>
+  </div>
+
+  <!-- Dedicated Admin Auth & Dashboard Modal -->
+  <div class="login-backdrop" id="adminAuthModal" role="dialog" aria-modal="true" aria-labelledby="adminAuthTitle" onclick="if(event.target===this)closeAdminAuth()">
+    <div class="login-card">
+      <button class="close-login" onclick="closeAdminAuth()" aria-label="Close">×</button>
+      <h2 id="adminAuthTitle">👑 بوابة الإدارة والأدمن</h2>
+      <p class="login-sub">خاصة بمسؤول متجر ذِكرى لإدارة المنتجات والحجوزات</p>
+      
+      <form id="adminLoginForm" onsubmit="handleAdminLogin(event)">
+        <label for="adminLoginEmail">بريد الأدمن</label>
+        <input id="adminLoginEmail" type="email" autocomplete="username" required placeholder="أدخل بريد الأدمن">
+        <label for="adminLoginPassword">كلمة مرور الأدمن</label>
+        <div style="position:relative;">
+          <input id="adminLoginPassword" type="password" autocomplete="current-password" required placeholder="أدخل كلمة المرور" style="padding-inline-end:38px;">
+          <button type="button" onclick="toggleAdminPassVisibility()" style="position:absolute;top:50%;inset-inline-end:8px;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:var(--muted);padding:4px;" title="إظهار/إخفاء كلمة المرور">👁️</button>
+        </div>
+        <button class="login-submit" type="submit">دخول لوحة الأدمن 👑</button>
+      </form>
+      <div class="login-result" id="adminAuthResult"></div>
+
+      <div class="admin-panel" id="adminPanel">
+        <strong data-i18n="addProductTitle">إضافة منتج جديد</strong>
+        <label for="newProductName" data-i18n="productNameLabel">اسم المنتج</label>
+        <input id="newProductName" type="text" placeholder="Product name">
+        <label for="newProductPrice" data-i18n="productPriceLabel">السعر بالجنيه</label>
+        <input id="newProductPrice" type="number" min="1" step="1" placeholder="1200">
+        <label for="newProductImage" data-i18n="productImageLabel">ارفع صورة المنتج من جهازك</label>
+        <input id="newProductImage" type="file" accept="image/*">
+        <button class="admin-action" onclick="addProductFromAdmin()" data-i18n="addProductButton">إضافة المنتج</button>
+
+        <div class="admin-inventory">
+          <strong data-i18n="inventoryTitle" style="display:block;margin:16px 0 8px;">المنتجات المعروضة حالياً (حذف)</strong>
+          <div id="adminInventoryList" class="admin-inventory-list"></div>
+        </div>
+
+        <!-- Admin Bookings & Email Settings -->
+        <div style="margin-top:16px;border-top:1px dashed var(--line);padding-top:14px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <strong>📋 طلبات حجز الشات بوت</strong>
+            <button class="banner-btn" onclick="openBookingsModal()" style="font-size:11px;padding:6px 12px;">عرض الحجوزات (<span id="adminModalBookingsCount">0</span>)</button>
+          </div>
+          <strong style="display:block;margin:12px 0 6px;font-size:12px;">📧 إعدادات إشعارات الإيميل</strong>
+          <label for="adminNotifyEmail" style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px;">إيميل استقبال إشعارات الحجز:</label>
+          <div style="display:flex;gap:6px;">
+            <input id="adminNotifyEmail" type="email" style="flex:1;padding:8px;font-size:12px;" value="ywsfwlydmhmd02@gmail.com">
+            <button class="banner-btn" onclick="saveAdminNotifyEmail()" style="font-size:11px;padding:6px 10px;">حفظ</button>
+          </div>
+          <button class="banner-btn-secondary" onclick="sendTestNotificationEmail()" style="margin-top:8px;width:100%;text-align:center;padding:8px;color:var(--brown);border-color:var(--gold);background:#faf5ee;font-size:11px;">✉️ تجربة إرسال إشعار للإيميل الآن (Test Email)</button>
+          <p style="font-size:10px;color:var(--muted);margin:6px 0 0;line-height:1.6;">يتم إرسال إشعار فوري للبريد تلقائياً عند قيام أي عميل بالحجز عبر الشات بوت (FormSubmit Instant Notification).</p>
+        </div>
+
+        <button class="logout-login" onclick="logoutAdmin()" data-i18n="logout">تسجيل خروج الأدمن</button>
+      </div>
+    </div>
+  </div>
+  <a class="contact-float" href="https://wa.me/201112264887" target="_blank" rel="noopener noreferrer">☏ WhatsApp</a>
+
+  <div class="cart-backdrop" id="cartModal" role="dialog" aria-modal="true" aria-labelledby="cartTitle" onclick="if(event.target===this)closeCart()">
+    <div class="cart-card">
+      <div class="cart-head"><h2 id="cartTitle">سلة المشتريات</h2><button class="close-login" onclick="closeCart()" aria-label="Close">×</button></div>
+      <div class="cart-items" id="cartItems"></div>
+      <div class="cart-total"><span id="cartTotalLabel">الإجمالي</span><span id="cartTotal">0 EGP</span></div>
+      <div class="cart-actions"><button class="continue-btn" onclick="closeCart()" id="continueShopping">تكملة الشراء</button><button class="checkout-btn" onclick="showCheckout()" id="checkoutButton">إتمام الشراء</button></div>
+      <form class="checkout-form" id="checkoutForm" onsubmit="completeCheckout(event)">
+        <h3 id="checkoutTitle">بيانات التوصيل</h3>
+        <label for="buyerName" id="buyerNameLabel">الاسم بالكامل</label><input id="buyerName" required autocomplete="name">
+        <label for="buyerPhone" id="buyerPhoneLabel">رقم الموبايل</label><input id="buyerPhone" type="tel" required autocomplete="tel" pattern="[0-9+() -]{8,20}">
+        <label for="buyerAddress" id="buyerAddressLabel">عنوان التوصيل بالتفصيل</label><textarea id="buyerAddress" required rows="3" autocomplete="street-address"></textarea>
+        <button type="submit" id="confirmOrder">تأكيد الطلب عبر واتساب</button>
+        <p class="login-note" id="checkoutNote">سيتم إرسال تفاصيل طلبك إلى المتجر عبر واتساب لتأكيد الطلب والشحن.</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Realtime Floating Site Alert Banner -->
+  <div id="siteAlertBanner" class="site-alert-banner" role="alert">
+    <div class="alert-icon-ring">🔔</div>
+    <div class="alert-content">
+      <strong id="alertBannerTitle">حجز جديد عبر الشات بوت!</strong>
+      <div id="alertBannerText">وصل طلب حجز جديد لسلسلة.</div>
+    </div>
+    <button class="alert-btn" onclick="openBookingsModal();dismissAlertBanner()">عرض الحجز</button>
+    <button class="alert-close" onclick="dismissAlertBanner()" aria-label="Close">×</button>
+  </div>
+
+  <!-- ZEKRA Chatbot Launcher & Window -->
+  <div class="chat-launcher" id="chatLauncherWrap">
+    <div class="chat-launcher-tip" id="chatLauncherTip" onclick="toggleChatWindow()">
+      <span>محتارة تختاري إيه؟ اسألي مساعد ذِكرى ✨</span>
+      <button class="tip-close" onclick="event.stopPropagation();dismissChatTip()" aria-label="Close tip">×</button>
+    </div>
+    <button class="chat-launcher-btn" id="chatLauncherBtn" onclick="toggleChatWindow()" aria-label="Open Chatbot Assistant">
+      <span class="chat-launcher-pulse"></span>
+      <span id="chatLauncherIcon">✦</span>
+      <span class="chat-launcher-badge" id="chatLauncherBadge" style="display:none"></span>
+    </button>
+  </div>
+
+  <div class="chat-window" id="chatWindow" role="dialog" aria-modal="true" aria-labelledby="chatBotTitle">
+    <div class="chat-header">
+      <div class="chat-header-info">
+        <div class="chat-avatar">
+          <span>💎</span>
+          <span class="chat-avatar-status"></span>
+        </div>
+        <div>
+          <div class="chat-title" id="chatBotTitle">مساعد ذِكرى الذكي ✦</div>
+          <div class="chat-subtitle"><span style="color:#4caf50;">●</span> متواجد لمساعدتك واختيار سلسلتك</div>
+        </div>
+      </div>
+      <div class="chat-header-tools">
+        <button class="chat-head-btn" onclick="restartChatSession()" title="بدء محادثة جديدة" aria-label="Restart chat">↺</button>
+        <button class="chat-head-btn" onclick="toggleChatWindow()" title="إغلاق" aria-label="Close chat">✕</button>
+      </div>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <!-- Chat stream injected via JS -->
+    </div>
+    <div class="typing-indicator" id="chatTypingIndicator">
+      <span></span><span></span><span></span>
+    </div>
+    <div class="chat-footer">
+      <div class="chat-quick-hints" id="chatQuickHints">
+        <button class="chat-quick-hint" onclick="sendQuickMessage('أكثر السلاسل طلباً')">🌟 الأكثر طلباً</button>
+        <button class="chat-quick-hint" onclick="sendQuickMessage('سلسلة قلب')">💖 سلسلة قلب</button>
+        <button class="chat-quick-hint" onclick="sendQuickMessage('سلسلة نجمة')">⭐ سلسلة نجمة</button>
+        <button class="chat-quick-hint" onclick="sendQuickMessage('سلسلة حرف')">🔤 سلسلة حرف</button>
+        <button class="chat-quick-hint" onclick="sendQuickMessage('الأسعار والتوصيل')">🏷️ الأسعار والشحن</button>
+      </div>
+      <form class="chat-input-wrap" onsubmit="handleChatSubmit(event)">
+        <input type="text" id="chatInput" class="chat-input" placeholder="اكتبي رسالتك هنا..." autocomplete="off">
+        <button type="submit" class="chat-send-btn" aria-label="Send message">➤</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Bookings Management Modal for Admin & Site -->
+  <div class="bookings-backdrop" id="bookingsModal" role="dialog" aria-modal="true" aria-labelledby="bookingsModalTitle" onclick="if(event.target===this)closeBookingsModal()">
+    <div class="bookings-card">
+      <div class="bookings-head">
+        <h2 id="bookingsModalTitle">📋 طلبات الحجز من الشات بوت <span class="booking-status-badge status-new" id="bookingsTotalBadge">0</span></h2>
+        <button class="close-login" onclick="closeBookingsModal()" aria-label="Close">×</button>
+      </div>
+      <div class="bookings-filters">
+        <button class="booking-filter-btn active" id="filterBtnAll" onclick="setBookingFilter('all', this)">الكل (<span id="filterCountAll">0</span>)</button>
+        <button class="booking-filter-btn" id="filterBtnNew" onclick="setBookingFilter('new', this)">جديدة 🔔 (<span id="filterCountNew">0</span>)</button>
+        <button class="booking-filter-btn" id="filterBtnContacted" onclick="setBookingFilter('contacted', this)">تم التواصل 📞 (<span id="filterCountContacted">0</span>)</button>
+        <button class="booking-filter-btn" id="filterBtnCompleted" onclick="setBookingFilter('completed', this)">مكتملة ✅ (<span id="filterCountCompleted">0</span>)</button>
+        <button class="banner-btn" onclick="sendTestNotificationEmail()" style="margin-inline-start:auto;font-size:11px;padding:6px 12px;background:#4a3022;color:var(--gold);border:1px solid var(--gold);">📧 تجربة إشعار الإيميل</button>
+      </div>
+      <div class="bookings-list" id="bookingsListContainer">
+        <!-- Dynamic list of bookings -->
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="zekra_script.js"></script>
+</body>
+</html>
